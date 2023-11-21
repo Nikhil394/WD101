@@ -20,6 +20,9 @@ document.addEventListener('DOMContentLoaded', function () {
         // Save data to localStorage
         saveUserData(name, email, password, dob, acceptedTerms);
 
+        // Save data to CSV file
+        saveToCSV(name, email, password, dob, acceptedTerms);
+
         // Display data in the table
         displayUserData();
 
@@ -39,12 +42,27 @@ document.addEventListener('DOMContentLoaded', function () {
     function saveUserData(name, email, password, dob, acceptedTerms) {
         // Retrieve existing data from localStorage or initialize an empty array
         let userData = JSON.parse(localStorage.getItem('userData')) || [];
-
+    
         // Add new user data
         userData.push({ name, email, password, dob, acceptedTerms });
-
+    
         // Save the updated data back to localStorage
         localStorage.setItem('userData', JSON.stringify(userData));
+    }
+
+    function saveToCSV() {
+        // Retrieve data from localStorage
+        let userData = JSON.parse(localStorage.getItem('userData')) || [];
+    
+        // Prepare CSV data
+        const csvData = userData.map(user => `${user.name},${user.email},${user.password},${user.dob},${user.acceptedTerms ? 'Yes' : 'No'}`).join('\n');
+    
+        // Create or append to the CSV file
+        const blob = new Blob([csvData], { type: 'text/csv' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'user_data.csv';
+        a.click();
     }
 
     function loadUserData() {
